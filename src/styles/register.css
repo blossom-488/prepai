@@ -1,0 +1,55 @@
+.register-page{
+    min-height:100vh;
+    background:#050816;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.register-box{
+    width:420px;
+    background:#111827;
+    padding:40px;
+    border-radius:15px;
+    text-align:center;
+}
+
+.register-box h1{
+    color:#00E5FF;
+    margin-bottom:10px;
+}
+
+.tagline{
+    color:#bbb;
+    margin-bottom:20px;
+}
+
+.register-box form{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.register-box input{
+    padding:14px;
+    border:none;
+    border-radius:8px;
+}
+
+.register-box button{
+    padding:14px;
+    border:none;
+    border-radius:8px;
+    background:#00E5FF;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.register-box p{
+    margin-top:20px;
+    color:#bbb;
+}
+
+.register-box a{
+    color:#00E5FF;
+}

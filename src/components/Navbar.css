@@ -1,0 +1,83 @@
+/* Navbar */
+
+.navbar{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    z-index:1000;
+
+    background:rgba(5,8,22,.75);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+    padding:20px 0;
+}
+
+/* Container */
+
+.nav-container{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* Logo */
+
+.logo{
+    font-size:40px;
+    font-weight:800;
+    color:#fff;
+    cursor:pointer;
+}
+
+.logo span{
+    color:#22d3ee;
+}
+
+/* Links */
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:40px;
+}
+
+/* About & Contact Buttons */
+
+.nav-btn{
+    background:transparent;
+    border:none;
+    color:#ffffff;
+    font-size:18px;
+    font-weight:500;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.nav-btn:hover{
+    color:#22d3ee;
+    transform:translateY(-2px);
+}
+
+/* Login Button */
+
+.login-btn{
+    background:#22d3ee;
+    color:#050816;
+
+    padding:12px 28px;
+
+    border:none;
+    border-radius:30px;
+
+    font-size:16px;
+    font-weight:600;
+
+    transition:.3s;
+}
+
+.login-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 0 20px rgba(34,211,238,.5);
+}
