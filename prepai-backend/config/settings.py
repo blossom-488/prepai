@@ -17,12 +17,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings
 
-SECRET_KEY = 'django-insecure-_ui@8zjt*ta_f27n+yu!r05d%6@mnh^(i$yy91+j!741wjpgo5'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-secret-key")
 
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+]
 
 # ==========================
 # Gemini API Key
@@ -55,7 +57,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     # CORS Middleware
     'corsheaders.middleware.CorsMiddleware',
 
@@ -140,7 +142,9 @@ USE_TZ = True
 # ==========================
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ==========================
 # Default primary key field
@@ -153,8 +157,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS SETTINGS
 # ==========================
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-]
+CORS_ALLOWED_ORIGINS = os.getenv(
+    "CORS_ALLOWED_ORIGINS",
+    "http://localhost:5173"
+).split(",")
 
 CORS_ALLOW_CREDENTIALS = True
