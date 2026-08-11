@@ -2,7 +2,7 @@ import whisper
 
 
 # Load the model only once
-model = whisper.load_model("base")
+model = whisper.load_model("tiny")
 
 
 def transcribe_audio(audio_path):
