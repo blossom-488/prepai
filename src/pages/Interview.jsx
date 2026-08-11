@@ -44,15 +44,26 @@ function Interview() {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-       const response = await fetch(
-  `https://genuine-courtesy-production-64fd.up.railway.app/api/questions/?domain=${selectedDomain}`
-);
+        const response = await fetch(
+          `https://genuine-courtesy-production-64fd.up.railway.app/api/questions/?domain=${selectedDomain}`
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(
+            "Questions API error:",
+            response.status,
+            errorText
+          );
+
+          throw new Error(`Questions API failed: ${response.status}`);
+        }
 
         const data = await response.json();
 
         setCurrentQuestions(data);
       } catch (error) {
-        console.error(error);
+        console.error("Fetch questions error:", error);
 
         Swal.fire({
           icon: "error",
@@ -73,25 +84,24 @@ function Interview() {
   // ===========================
 
   useEffect(() => {
-  if (currentQuestions.length === 0) return;
+    if (currentQuestions.length === 0) return;
 
-  // Stop timer if recording is not running
-  if (!timerRunning) return;
+    if (!timerRunning) return;
 
-  const timer = setInterval(() => {
-    setTimeLeft((prev) => {
-      if (prev <= 1) {
-        clearInterval(timer);
-        setTimerRunning(false);
-        return 0;
-      }
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setTimerRunning(false);
+          return 0;
+        }
 
-      return prev - 1;
-    });
-  }, 1000);
+        return prev - 1;
+      });
+    }, 1000);
 
-  return () => clearInterval(timer);
-}, [timerRunning, questionIndex, currentQuestions.length]);
+    return () => clearInterval(timer);
+  }, [timerRunning, questionIndex, currentQuestions.length]);
 
   // ===========================
   // Start Recording
@@ -114,7 +124,7 @@ function Interview() {
         color: "#ffffff",
       });
     } catch (error) {
-      console.error(error);
+      console.error("Recording error:", error);
 
       Swal.fire({
         icon: "error",
@@ -147,13 +157,33 @@ function Interview() {
 
       setLoading(true);
 
-     const response = await fetch(
-  "https://genuine-courtesy-production-64fd.up.railway.app/api/upload-audio/",
-  {
-    method: "POST",
-    body: formData,
-  }
-);
+      // ===========================
+      // Production Upload API
+      // ===========================
+
+      const response = await fetch(
+        "https://genuine-courtesy-production-64fd.up.railway.app/api/upload-audio/",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      // ===========================
+      // Handle API Errors
+      // ===========================
+
+      if (!response.ok) {
+        const errorText = await response.text();
+
+        console.error(
+          "Upload API error:",
+          response.status,
+          errorText
+        );
+
+        throw new Error(`Upload failed: ${response.status}`);
+      }
 
       const data = await response.json();
 
@@ -172,10 +202,10 @@ function Interview() {
         background: "#111827",
         color: "#ffffff",
       });
-          } catch (error) {
+    } catch (error) {
       setLoading(false);
 
-      console.error(error);
+      console.error("Upload error:", error);
 
       Swal.fire({
         icon: "error",
@@ -210,6 +240,7 @@ function Interview() {
       setQuestionIndex((prev) => prev + 1);
       setTimeLeft(60);
       setUploaded(false);
+      setTimerRunning(false);
     } else {
       navigate("/evaluation", {
         state: {
