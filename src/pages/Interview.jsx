@@ -44,9 +44,9 @@ function Interview() {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/questions/?domain=${selectedDomain}`
-        );
+       const response = await fetch(
+  `https://genuine-courtesy-production-64fd.up.railway.app/api/questions/?domain=${selectedDomain}`
+);
 
         const data = await response.json();
 
@@ -147,13 +147,13 @@ function Interview() {
 
       setLoading(true);
 
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/upload-audio/",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+     const response = await fetch(
+  "https://genuine-courtesy-production-64fd.up.railway.app/api/upload-audio/",
+  {
+    method: "POST",
+    body: formData,
+  }
+);
 
       const data = await response.json();
 
