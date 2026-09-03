@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 function Dashboard() {
   const navigate = useNavigate();
 
-  const [message, setMessage] = useState("");
+  const [message] = useState("Welcome to PrepAI 🚀");
 
   const [stats, setStats] = useState({
     total_interviews: 0,
@@ -13,20 +13,39 @@ function Dashboard() {
     best_domain: "N/A",
   });
 
-  // Fetch Welcome Message
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/")
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch((err) => console.log(err));
-  }, []);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   // Fetch Dashboard Statistics
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/dashboard/")
-      .then((res) => res.json())
-      .then((data) => setStats(data))
-      .catch((err) => console.log(err));
+    const fetchDashboardStats = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch(
+          "https://genuine-courtesy-production-64fd.up.railway.app/api/dashboard/"
+        );
+
+        if (!response.ok) {
+          throw new Error(`Dashboard API failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        setStats(data);
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+
+        setError(
+          "Unable to load dashboard statistics. Please try again."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardStats();
   }, []);
 
   const cardStyle = {
@@ -45,6 +64,7 @@ function Dashboard() {
         minHeight: "100vh",
         padding: "40px",
         textAlign: "center",
+        color: "white",
       }}
     >
       {/* Heading */}
@@ -67,6 +87,37 @@ function Dashboard() {
       >
         {message}
       </h3>
+
+      {/* Loading */}
+
+      {loading && (
+        <p
+          style={{
+            color: "#facc15",
+            fontSize: "18px",
+            marginBottom: "30px",
+          }}
+        >
+          ⏳ Loading your interview statistics...
+        </p>
+      )}
+
+      {/* Error */}
+
+      {!loading && error && (
+        <div
+          style={{
+            maxWidth: "600px",
+            margin: "0 auto 30px",
+            background: "#1f2937",
+            padding: "20px",
+            borderRadius: "12px",
+            color: "#f87171",
+          }}
+        >
+          ⚠️ {error}
+        </div>
+      )}
 
       {/* Dashboard Cards */}
 
@@ -211,6 +262,7 @@ function Dashboard() {
           borderRadius: "10px",
           fontSize: "17px",
           margin: "10px",
+          cursor: "pointer",
         }}
       >
         🎤 Start Interview
@@ -226,6 +278,7 @@ function Dashboard() {
           borderRadius: "10px",
           fontSize: "17px",
           margin: "10px",
+          cursor: "pointer",
         }}
       >
         📊 Reports
@@ -241,6 +294,7 @@ function Dashboard() {
           borderRadius: "10px",
           fontSize: "17px",
           margin: "10px",
+          cursor: "pointer",
         }}
       >
         🚪 Logout
