@@ -5,12 +5,38 @@ function Reports() {
   const navigate = useNavigate();
 
   const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/reports/")
-      .then((res) => res.json())
-      .then((data) => setReports(data))
-      .catch((err) => console.log(err));
+    const fetchReports = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch(
+          "https://genuine-courtesy-production-64fd.up.railway.app/api/reports/"
+        );
+
+        if (!response.ok) {
+          throw new Error(`Reports API failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        setReports(data);
+      } catch (err) {
+        console.error("Reports fetch error:", err);
+
+        setError(
+          "Unable to load interview reports. Please try again."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReports();
   }, []);
 
   return (
@@ -41,9 +67,65 @@ function Reports() {
         Interview History
       </h3>
 
-      {reports.length === 0 ? (
-        <h2>No Reports Found</h2>
-      ) : (
+      {/* Loading */}
+      {loading && (
+        <h2
+          style={{
+            color: "#f59e0b",
+          }}
+        >
+          ⏳ Loading Reports...
+        </h2>
+      )}
+
+      {/* Error */}
+      {!loading && error && (
+        <div
+          style={{
+            maxWidth: "650px",
+            margin: "30px auto",
+            background: "#1f2937",
+            padding: "25px",
+            borderRadius: "15px",
+            color: "#f87171",
+          }}
+        >
+          <h2>⚠️ Unable to Load Reports</h2>
+
+          <p>{error}</p>
+
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              background: "#ef4444",
+              color: "white",
+              padding: "12px 25px",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              marginTop: "10px",
+            }}
+          >
+            Try Again
+          </button>
+        </div>
+      )}
+
+      {/* No Reports */}
+      {!loading && !error && reports.length === 0 && (
+        <h2
+          style={{
+            color: "#cbd5e1",
+          }}
+        >
+          No Reports Found
+        </h2>
+      )}
+
+      {/* Reports */}
+      {!loading &&
+        !error &&
+        reports.length > 0 &&
         reports.map((report) => (
           <div
             key={report.id}
@@ -58,24 +140,25 @@ function Reports() {
             }}
           >
             <h2
-  style={{
-    color: "#22d3ee",
-    marginBottom: "10px",
-  }}
->
-  💻 {report.domain} Interview
-</h2>
+              style={{
+                color: "#22d3ee",
+                marginBottom: "10px",
+              }}
+            >
+              💻 {report.domain} Interview
+            </h2>
 
-<h3
-  style={{
-    color: "#cbd5e1",
-    marginBottom: "20px",
-    fontWeight: "500",
-    lineHeight: "1.5",
-  }}
->
-  ❓ {report.question}
-</h3>
+            <h3
+              style={{
+                color: "#cbd5e1",
+                marginBottom: "20px",
+                fontWeight: "500",
+                lineHeight: "1.5",
+              }}
+            >
+              ❓ {report.question}
+            </h3>
+
             <div
               style={{
                 display: "grid",
@@ -132,8 +215,7 @@ function Reports() {
               {report.feedback}
             </div>
           </div>
-        ))
-      )}
+        ))}
 
       <button
         onClick={() => navigate("/dashboard")}
