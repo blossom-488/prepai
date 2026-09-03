@@ -50,6 +50,7 @@ function Interview() {
 
         if (!response.ok) {
           const errorText = await response.text();
+
           console.error(
             "Questions API error:",
             response.status,
@@ -108,6 +109,10 @@ function Interview() {
   // ===========================
 
   const handleStart = async () => {
+    if (recording || loading) {
+      return;
+    }
+
     try {
       await startRecording();
 
@@ -142,6 +147,10 @@ function Interview() {
   // ===========================
 
   const handleStop = async () => {
+    if (!recording || loading) {
+      return;
+    }
+
     try {
       const audio = await stopRecording();
 
@@ -170,22 +179,80 @@ function Interview() {
       );
 
       // ===========================
-      // Handle API Errors
+      // Read API response
+      // ===========================
+
+      const data = await response.json();
+
+      // ===========================
+      // Multiple Voices Detected
+      // ===========================
+
+      if (
+        response.status === 400 &&
+        data.error === "MULTIPLE_VOICES_DETECTED"
+      ) {
+        setLoading(false);
+        setUploaded(false);
+
+        Swal.fire({
+          icon: "warning",
+          title: "⚠️ Multiple Voices Detected",
+          text:
+            "Only one person is allowed to speak at a time. " +
+            "Please make sure only one person is speaking and try again.",
+          background: "#111827",
+          color: "#ffffff",
+          confirmButtonColor: "#f59e0b",
+          confirmButtonText: "Record Again",
+        });
+
+        return;
+      }
+
+      // ===========================
+      // Voice Detection Error
+      // ===========================
+
+      if (
+        response.status === 500 &&
+        data.error === "VOICE_DETECTION_ERROR"
+      ) {
+        setLoading(false);
+        setUploaded(false);
+
+        Swal.fire({
+          icon: "error",
+          title: "Voice Detection Failed",
+          text:
+            "We couldn't verify the number of speakers. " +
+            "Please try recording again.",
+          background: "#111827",
+          color: "#ffffff",
+          confirmButtonColor: "#ef4444",
+          confirmButtonText: "Try Again",
+        });
+
+        return;
+      }
+
+      // ===========================
+      // Other API Errors
       // ===========================
 
       if (!response.ok) {
-        const errorText = await response.text();
-
         console.error(
           "Upload API error:",
           response.status,
-          errorText
+          data
         );
 
         throw new Error(`Upload failed: ${response.status}`);
       }
 
-      const data = await response.json();
+      // ===========================
+      // Successful Evaluation
+      // ===========================
 
       setLoading(false);
 
@@ -210,7 +277,9 @@ function Interview() {
       Swal.fire({
         icon: "error",
         title: "Upload Failed",
-        text: "Unable to upload your answer. Please try again.",
+        text:
+          "Unable to upload your answer. " +
+          "Please check your connection and try again.",
         background: "#111827",
         color: "#ffffff",
         confirmButtonColor: "#ef4444",
@@ -281,7 +350,7 @@ function Interview() {
             marginTop: "20px",
           }}
         >
-          🤖 AI is evaluating your answer...
+          🤖 Checking your voice and evaluating your answer...
         </h3>
       )}
 
