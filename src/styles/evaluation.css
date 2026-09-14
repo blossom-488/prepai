@@ -1,0 +1,52 @@
+.evaluation-page{
+    min-height:100vh;
+    background:#050816;
+    color:white;
+    text-align:center;
+    padding:40px;
+}
+
+.evaluation-page h1{
+    color:#00E5FF;
+    margin-bottom:15px;
+}
+
+.score-card{
+    margin:40px auto;
+    background:#111827;
+    width:300px;
+    padding:30px;
+    border-radius:15px;
+}
+
+.score-card h1{
+    font-size:60px;
+}
+
+.feedback{
+    max-width:700px;
+    margin:40px auto;
+    text-align:left;
+    background:#111827;
+    padding:25px;
+    border-radius:15px;
+}
+
+.feedback h3{
+    color:#00E5FF;
+    margin-bottom:15px;
+}
+
+.feedback ul{
+    line-height:2;
+}
+
+button{
+    margin-top:30px;
+    background:#00E5FF;
+    border:none;
+    padding:15px 30px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}

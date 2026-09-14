@@ -1,0 +1,41 @@
+.domain-page {
+    min-height: 100vh;
+    background: #050816;
+    color: white;
+    padding: 40px;
+    text-align: center;
+}
+
+.domain-page h1 {
+    color: #00E5FF;
+    margin-bottom: 10px;
+}
+
+.domain-page p {
+    color: #bdbdbd;
+    margin-bottom: 40px;
+}
+
+.domain-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 900px;
+    margin: auto;
+}
+
+.domain-card {
+    background: #111827;
+    color: white;
+    text-decoration: none;
+    padding: 35px;
+    border-radius: 12px;
+    font-size: 22px;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.domain-card:hover {
+    background: #00E5FF;
+    color: #050816;
+}
